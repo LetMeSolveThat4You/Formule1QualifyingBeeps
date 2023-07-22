@@ -55,7 +55,7 @@ def main():
     total_interval_time_ms = 0
 
     # Use a thread pool to manage a limited number of threads efficiently (e.g., 5 threads)
-    pool = [5]
+    pool = []
 
     # Simulate the race for each driver
     for i, (name, interval) in enumerate(drivers):
