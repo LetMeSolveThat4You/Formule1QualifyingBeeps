@@ -4,19 +4,27 @@ import winsound
 
 NUM_DRIVERS = 20
 
+
 def beep_thread():
-    winsound.Beep(1500, 70)  # Play a beep sound with frequency 1500 Hz for 70 milliseconds
+    # Function to play a beep sound with frequency 1500 Hz for 70 milliseconds
+    winsound.Beep(1500, 70)
+
 
 def beep_with_interval(driver_name, interval):
+    # Function to print a message with driver's completion time and play the beep sound asynchronously
     if interval > 0:
-        print(f"Driver {driver_name} has completed his lap within {interval} milliseconds.")
+        print(
+            f"Driver {driver_name} has completed his lap within {interval} milliseconds.")
     else:
         print(f"Driver {driver_name} has finished the race first.")
-    thread = threading.Thread(target=beep_thread)  # Create a new thread to play the beep sound asynchronously
+    # Create a new thread to play the beep sound asynchronously
+    thread = threading.Thread(target=beep_thread)
     thread.start()
+
 
 def main():
     drivers = [
+        # List of drivers with their names and lap completion intervals in milliseconds
         ("Lewis HAMILTON", 0),
         ("Max VERSTAPPEN", 3),
         ("Lando NORRIS", 82),
@@ -47,16 +55,21 @@ def main():
     total_interval_time_ms = 0
 
     # Use a thread pool to manage a limited number of threads efficiently (e.g., 5 threads)
-    pool = []
+    pool = [5]
 
     # Simulate the race for each driver
     for i, (name, interval) in enumerate(drivers):
         if i > 0:
             time_to_wait = interval / 1000.0
             start = time.perf_counter()
+
+            # Busy-wait to create a more precise delay before starting the beep sound thread
             while time.perf_counter() - start < time_to_wait:
-                pass  # Busy-wait to create a more precise delay
-        thread = threading.Thread(target=beep_with_interval, args=(name, interval))
+                pass
+
+         # Create a thread for each driver to play the beep sound with interval
+        thread = threading.Thread(
+            target=beep_with_interval, args=(name, interval))
         thread.start()
         pool.append(thread)
         total_interval_time_ms += interval  # Accumulate the total interval time
@@ -66,11 +79,13 @@ def main():
         thread.join()
 
     end_time = time.perf_counter()
-    
+
     execution_time = end_time - start_time
 
+    # Display race and execution results
     print("\nTotal interval time: {} milliseconds".format(total_interval_time_ms))
     print("Total execution time: {:.3f} seconds".format(execution_time))
+
 
 if __name__ == "__main__":
     main()
